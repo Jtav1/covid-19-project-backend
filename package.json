@@ -19,17 +19,17 @@
       "*.spec.js"
     ]
   },
-  "jest": { 
+  "jest": {
     "testEnvironment": "node"
   },
   "scripts": {
     "start": "npm run prod",
-    "server": "node ./dist-server/bin/www",
-    "transpile": "babel ./server --out-dir dist-server",
+    "server": "node ./dist/bin/www",
+    "transpile": "babel ./server --out-dir dist",
     "clean": "rimraf dist-server",
     "build": "npm-run-all clean transpile",
-    "dev": "env NODE_ENV=development npm-run-all build server",
-    "prod": "env NODE_ENV=production npm-run-all build server",
+    "dev": "npm-run-all build server",
+    "prod": "npm-run-all build server",
     "test": "jest"
   },
   "dependencies": {
@@ -38,8 +38,10 @@
     "@babel/preset-env": "^7.9.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
     "express": "~4.16.1",
     "morgan": "~1.9.1",
+    "mysql": "^2.18.1",
     "nodemon": "^2.0.2",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2"
