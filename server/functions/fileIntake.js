@@ -17,22 +17,24 @@ const createConnection = () => {
 const loadFile = (fileJson) => {
     let conn = createConnection();
 
-    console.log(fileJson);
-
-    let sql = "INSERT INTO Data (Date,state,country,updated,confirmed,deaths,recovered) VALUES ?";
+    let sql = "INSERT INTO Data (Date,state,country,updated,confirmed,deaths,recovered,fips,city,lat,longitude) VALUES ?";
     let values = [];
 
     fileJson.lines.map((line) => {
         if(line.country) {
             values.push(
             [
-                new Date(fileJson.date),
-                line.state, 
-                line.country, 
-                new Date(line.update), 
+                fileJson.date ? new Date(fileJson.date) : null,
+                line.state ? line.state : "", 
+                line.country ? line.country : "", 
+                line.updated ? new Date(line.updated) : null, 
                 line.confirmed ? line.confirmed : 0, 
                 line.deaths ? line.deaths : 0, 
-                line.recovered ? line.recovered : 0
+                line.recovered ? line.recovered : 0,
+                line.fips ? line.fips : "",
+                line.city? line.city : "",
+                line.lat ? line.lat : "",
+                line.longitude ? line.longitude : ""
             ]
         );
         }
