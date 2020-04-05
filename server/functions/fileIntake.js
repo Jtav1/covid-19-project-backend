@@ -14,24 +14,36 @@ const createConnection = () => {
     return connection;
 }
 
-const cleanupConnection = (connection) => {
-    connection.end();
-}
-
-
-
-
 const loadFile = (fileJson) => {
-    console.log(fileJson.lines);
-    
-    let connection = createConnection();
+    let conn = createConnection();
 
-    connection.query('SELECT 1 + 1 AS solution', (error, results, fields) => {
-        if (error) throw error;
-        console.log('The solution is: ', results[0].solution);
-      });
+    console.log(fileJson);
 
-    cleanupConnection(connection);
+    let sql = "INSERT INTO Data (Date,state,country,updated,confirmed,deaths,recovered) VALUES ?";
+    let values = [];
+
+    fileJson.lines.map((line) => {
+        if(line.country) {
+            values.push(
+            [
+                new Date(fileJson.date),
+                line.state, 
+                line.country, 
+                new Date(line.update), 
+                line.confirmed ? line.confirmed : 0, 
+                line.deaths ? line.deaths : 0, 
+                line.recovered ? line.recovered : 0
+            ]
+        );
+        }
+       
+    });
+
+    conn.query(sql, [values], (err) => {
+        if (err) throw err;
+        conn.end();
+    });
+
 }
 
 export default {

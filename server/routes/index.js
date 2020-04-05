@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 
 /* PUT file upload */
 router.put('/upload', function(req, res, next) {
-  res.send(intakeFunctions.loadFile(req.body));
+  res.send(intakeFunctions.loadFile(req.body.data.lineJson));
 });
 
 
