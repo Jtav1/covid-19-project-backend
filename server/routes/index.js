@@ -7,7 +7,7 @@ import dataFunctions from "../functions/getData.js";
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', (req, res, next) => {
+router.get('/api', (req, res, next) => {
   res.send({"Key": "This is a test"} );
 });
 
@@ -22,7 +22,7 @@ router.put('/api/uploadUS', (req, res, next) => {
 });
 
 
-/* GET home page. */
+/* GET country list */
 router.get('/api/countryList', async (req, res, next) => {
 
   let result = await dataFunctions.countryList();
