@@ -48,6 +48,48 @@ const loadFile = (fileJson) => {
 
 }
 
+const loadUSFile = (fileJson) => {
+    let conn = createConnection();
+
+    let sql = "INSERT INTO Data_US (Active,Confirmed,Country_Region,date,Deaths,FIPS,Hospitalization_Rate,Incident_Rate,ISO3,Last_Update,Lat,Longitude,Mortality_Rate,People_Hospitalized,People_Tested,Province_State,Recovered,Testing_Rate,UID) VALUES ?";
+    let values = [];
+
+    fileJson.lines.map((line) => {
+        values.push(
+            [
+                line.active ? line.active : null,
+                line.confirmed ? line.confirmed :  null,
+                line.country_region ? line.country_region :  null,
+                fileJson.date ? new Date(fileJson.date) : null,
+                line.deaths ? line.deaths :  null,
+                line.fips ? line.fips :  null,
+                line.hospitalization_rate ? line.hospitalization_rate :  null,
+                line.incident_rate ? line.incident_rate :  null,
+                line.iso3 ? line.iso3 :  null,
+                line.last_update ? new Date(line.last_update) : null,
+                line.lat ? line.lat :  null,
+                line.longitude ? line.longitude :  null,
+                line.mortality_rate ? line.mortality_rate :  null,
+                line.people_hospitalized ? line.people_hospitalized :  null,
+                line.people_tested ? line.people_tested :  null,
+                line.province_state ? line.province_state :  null,
+                line.recovered ? line.recovered : null,
+                line.testing_rate ? line.testing_rate :  null,
+                line.uid ? line.uid : null,
+            ]
+        );
+    });
+
+    console.log(sql);
+    conn.query(sql, [values], (err) => {
+        
+        if (err) throw err;
+        conn.end();
+    });
+
+}
+
 export default {
-    loadFile
+    loadFile,
+    loadUSFile
 }
