@@ -41,6 +41,63 @@ const countryList = async () => {
     return responseObject;
 }
 
+const getMdDates = async () => {
+
+  let db = getConnection();
+
+  let sql = "select distinct date from Data_US where Province_State = \'Maryland\' order by date asc";
+  let responseObject = {dates: []};
+
+  let test = await db.query(sql);
+
+  test.forEach((rowDataPacket) => {
+      rowDataPacket.date = new Date(rowDataPacket.date);
+      responseObject.dates.push((rowDataPacket.date.getMonth() + 1) + "-" + rowDataPacket.date.getDate() + "-" + rowDataPacket.date.getFullYear());
+
+  });
+     
+  return JSON.stringify(responseObject.dates);
+}
+
+const getMdData = async () => {
+
+  let db = getConnection();
+
+  let sql = "select distinct date, active from Data_US where Province_State = \'Maryland\' order by date asc;";
+  let responseObject = {active: []};
+
+  let test = await db.query(sql);
+
+  test.forEach((rowDataPacket) => {
+    responseObject.active.push(rowDataPacket.active);
+  });
+     
+  return JSON.stringify(responseObject.active);
+}
+
+const getMdDeltas = async () => {
+
+  let db = getConnection();
+
+  let sql = "select distinct date, active from Data_US where Province_State = \'Maryland\' order by date asc;";
+  let responseObject = {active: []};
+
+  let test = await db.query(sql);
+
+  for(var i = 0; i < test.length-1; i++){
+    responseObject.active.push((test[i+1].active - test[i].active));
+  }
+
+  test.forEach((rowDataPacket) => {
+    responseObject.active.push(rowDataPacket.active);
+  });
+     
+  return JSON.stringify(responseObject.active);
+}
+
 export default {
-    countryList
+    countryList,
+    getMdDates,
+    getMdData,
+    getMdDeltas
 }

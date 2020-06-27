@@ -21,6 +21,21 @@ router.put('/api/uploadUS', (req, res, next) => {
   res.send(intakeFunctions.loadUSFile(req.body.data.lineJson));
 });
 
+/* GET US-Maryland specific dates */
+router.get('/api/MarylandDates', async (req, res, next) => {
+  res.send(await dataFunctions.getMdDates());
+});
+
+/* GET US-Maryland specific data*/
+router.get('/api/MarylandData', async (req, res, next) => {
+  res.send(await dataFunctions.getMdData());
+});
+
+/* GET US-Maryland specific deltas*/
+router.get('/api/MarylandDeltas', async (req, res, next) => {
+  res.send(await dataFunctions.getMdDeltas());
+});
+
 
 /* GET country list */
 router.get('/api/countryList', async (req, res, next) => {
@@ -28,7 +43,5 @@ router.get('/api/countryList', async (req, res, next) => {
   let result = await dataFunctions.countryList();
   res.status(200).send(result);
 });
-
-
 
 export default router;
