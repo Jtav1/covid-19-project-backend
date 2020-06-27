@@ -87,10 +87,8 @@ const getMdDeltas = async () => {
   for(var i = 0; i < test.length-1; i++){
     responseObject.active.push((test[i+1].active - test[i].active));
   }
-
-  test.forEach((rowDataPacket) => {
-    responseObject.active.push(rowDataPacket.active);
-  });
+  
+  responseObject.active.push(0);
      
   return JSON.stringify(responseObject.active);
 }
