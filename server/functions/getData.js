@@ -84,9 +84,9 @@ const getData = async (state) => {
   let sql = "select distinct date, active from Data_US where Province_State = \'" + state + "\' order by date asc;";
   let responseObject = {active: []};
 
-  let test = await db.query(sql);
+  let qry = await db.query(sql);
 
-  test.forEach((rowDataPacket) => {
+  qry.forEach((rowDataPacket) => {
     responseObject.active.push(rowDataPacket.active);
   });
      
@@ -100,10 +100,10 @@ const getDeltas = async (state) => {
   let sql = "select distinct date, active from Data_US where Province_State = \'" + state + "\' order by date asc;";
   let responseObject = {active: []};
 
-  let test = await db.query(sql);
+  let qry = await db.query(sql);
 
-  for(var i = 0; i < test.length-1; i++){
-    responseObject.active.push((test[i+1].active - test[i].active));
+  for(var i = 0; i < qry.length-1; i++){
+    responseObject.active.push((qry[i+1].active - qry[i].active));
   }
   
   responseObject.active.push(0);
