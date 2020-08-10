@@ -1,6 +1,8 @@
 import mysql from 'mysql';
 import util from 'util';
 
+import regeneratorRuntime from "regenerator-runtime";
+
 const makeDb = ( config ) => {
     const connection = mysql.createConnection( config );
     return {
@@ -32,20 +34,36 @@ const countryList = async () => {
     let sql = "SELECT DISTINCT COUNTRY FROM Data order by COUNTRY asc";
     let responseObject = {countries: []};
 
-    let test = await db.query(sql);
+    let qry = await db.query(sql);
 
-    test.forEach((rowDataPacket) => {
+    qry.forEach((rowDataPacket) => {
         responseObject.countries.push(rowDataPacket.COUNTRY);
     });
        
     return responseObject;
 }
 
-const getMdDates = async () => {
+const stateList = async () => {
+    
+  let db = getConnection();
+
+  let sql = "SELECT DISTINCT PROVINCE_STATE FROM Data_US order by PROVINCE_STATE asc";
+  let responseObject = {states: []};
+
+  let qry = await db.query(sql);
+
+  qry.forEach((rowDataPacket) => {
+      responseObject.states.push(rowDataPacket.PROVINCE_STATE);
+  });
+     
+  return responseObject;
+}
+
+const getDates = async (state) => {
 
   let db = getConnection();
 
-  let sql = "select distinct date from Data_US where Province_State = \'Maryland\' order by date asc";
+  let sql = "select distinct date from Data_US where Province_State = \'" + state + "\' order by date asc";
   let responseObject = {dates: []};
 
   let test = await db.query(sql);
@@ -59,11 +77,11 @@ const getMdDates = async () => {
   return JSON.stringify(responseObject.dates);
 }
 
-const getMdData = async () => {
+const getData = async (state) => {
 
   let db = getConnection();
 
-  let sql = "select distinct date, active from Data_US where Province_State = \'Maryland\' order by date asc;";
+  let sql = "select distinct date, active from Data_US where Province_State = \'" + state + "\' order by date asc;";
   let responseObject = {active: []};
 
   let test = await db.query(sql);
@@ -75,11 +93,11 @@ const getMdData = async () => {
   return JSON.stringify(responseObject.active);
 }
 
-const getMdDeltas = async () => {
+const getDeltas = async (state) => {
 
   let db = getConnection();
 
-  let sql = "select distinct date, active from Data_US where Province_State = \'Maryland\' order by date asc;";
+  let sql = "select distinct date, active from Data_US where Province_State = \'" + state + "\' order by date asc;";
   let responseObject = {active: []};
 
   let test = await db.query(sql);
@@ -95,7 +113,8 @@ const getMdDeltas = async () => {
 
 export default {
     countryList,
-    getMdDates,
-    getMdData,
-    getMdDeltas
+    stateList,
+    getDates,
+    getData,
+    getDeltas
 }
