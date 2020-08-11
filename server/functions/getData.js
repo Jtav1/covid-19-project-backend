@@ -89,19 +89,19 @@ const getData = async (state) => {
 
   let db = getConnection();
 
-  let sql = "select distinct date, active from Data_US where Province_State = ? order by date asc;";
-  let responseObject = {active: []};
+  let sql = "select distinct date, confirmed from Data_US where Province_State = ? order by date asc;";
+  let responseObject = {confirmed: []};
 
   let qry = await db.query(sql, [state]);
   db.close();
 
   qry.forEach((rowDataPacket) => {
-    responseObject.active.push(rowDataPacket.active);
+    responseObject.confirmed.push(rowDataPacket.confirmed);
   });
 
 
      
-  return JSON.stringify(responseObject.active);
+  return JSON.stringify(responseObject.confirmed);
 }
 
 const getDeltas = async (state) => {
