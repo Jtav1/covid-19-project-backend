@@ -47,13 +47,13 @@ const stateList = async () => {
     
   let db = getConnection();
 
-  let sql = "SELECT DISTINCT PROVINCE_STATE FROM Data_US order by PROVINCE_STATE asc";
-  let responseObject = {states: []};
+  let sql = "SELECT DISTINCT PROVINCE_STATE, FIPS FROM Data_US where FIPS < 800 order by PROVINCE_STATE asc";
+  let responseObject = [];
 
   let qry = await db.query(sql);
 
   qry.forEach((rowDataPacket) => {
-      responseObject.states.push(rowDataPacket.PROVINCE_STATE);
+      responseObject.push({id: rowDataPacket.FIPS, state: rowDataPacket.PROVINCE_STATE});
   });
      
   return responseObject;
@@ -103,7 +103,8 @@ const getDeltas = async (state) => {
   let qry = await db.query(sql);
 
   for(var i = 0; i < qry.length-1; i++){
-    responseObject.active.push((qry[i+1].active - qry[i].active));
+    let delta = (qry[i+1].active - qry[i].active);
+    if(delta > -500 && delta < 100000) responseObject.active.push(delta); //Rule out data outliers/bugs
   }
   
   responseObject.active.push(0);
