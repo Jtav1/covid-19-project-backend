@@ -1,2 +1,3 @@
 # covid-19-app-backend
  
+ Backend in NODE.JS for my simple COVID-19 tracker app. More info coming soon...
