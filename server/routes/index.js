@@ -40,6 +40,12 @@ router.get('/api/data/:state', async (req, res, next) => {
   res.send(await dataFunctions.getData(state));
 });
 
+/* GET US-state specific donut chart data*/
+router.get('/api/donutData/:state', async (req, res, next) => {
+  let state = req.params.state;
+  res.send(await dataFunctions.getDonutData(state));
+});
+
 /* GET country list */
 router.get('/api/countryList', async (req, res, next) => {
   let result = await dataFunctions.countryList();

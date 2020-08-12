@@ -32,13 +32,13 @@ const countryList = async () => {
     let db = getConnection();
 
     let sql = "SELECT DISTINCT COUNTRY FROM Data order by COUNTRY asc";
-    let responseObject = {countries: []};
+    let responseObject = [];
 
-    let qry = await db.query(sql);
+    let res = await db.query(sql);
     db.close();
 
-    qry.forEach((rowDataPacket) => {
-        responseObject.countries.push(rowDataPacket.COUNTRY);
+    res.forEach((rowDataPacket) => {
+        responseObject.push({country: rowDataPacket.COUNTRY});
     });
     
        
@@ -52,10 +52,10 @@ const stateList = async () => {
   let sql = "SELECT DISTINCT PROVINCE_STATE, FIPS FROM Data_US where FIPS < 800 order by PROVINCE_STATE asc";
   let responseObject = [];
 
-  let qry = await db.query(sql);
+  let res = await db.query(sql);
   db.close();
 
-  qry.forEach((rowDataPacket) => {
+  res.forEach((rowDataPacket) => {
       responseObject.push({id: rowDataPacket.FIPS, state: rowDataPacket.PROVINCE_STATE});
   });
 
@@ -92,10 +92,10 @@ const getData = async (state) => {
   let sql = "select distinct date, confirmed from Data_US where Province_State = ? order by date asc;";
   let responseObject = {confirmed: []};
 
-  let qry = await db.query(sql, [state]);
+  let res = await db.query(sql, [state]);
   db.close();
 
-  qry.forEach((rowDataPacket) => {
+  res.forEach((rowDataPacket) => {
     responseObject.confirmed.push(rowDataPacket.confirmed);
   });
 
@@ -111,11 +111,11 @@ const getDeltas = async (state) => {
   let sql = "select distinct date, active from Data_US where Province_State = ? order by date asc;";
   let responseObject = {active: []};
 
-  let qry = await db.query(sql, [state]);
+  let res = await db.query(sql, [state]);
   db.close();
 
-  for(var i = 0; i < qry.length-1; i++){
-    let delta = (qry[i+1].active - qry[i].active);
+  for(var i = 0; i < res.length-1; i++){
+    let delta = (res[i+1].active - res[i].active);
     if(delta > -500 && delta < 100000) responseObject.active.push(delta); //Rule out data outliers/bugs
   }
 
@@ -124,10 +124,30 @@ const getDeltas = async (state) => {
   return JSON.stringify(responseObject.active);
 }
 
+const getDonutData = async (state) => {
+
+  let db = getConnection();
+
+  let sql = "SELECT du.id, du.Province_State, du.Active, du.Recovered, du.Deaths FROM Data_US du JOIN (SELECT MAX(d.id) AS ID FROM Data_US d GROUP BY d.Province_State) max ON du.id = max.id WHERE Province_State = ?";
+  let responseObject = [];
+
+  let res = await db.query(sql, [state]);
+  db.close();
+
+  res.forEach((rowDataPacket) => {
+    responseObject.push(rowDataPacket.Active);
+    responseObject.push(rowDataPacket.Recovered);
+    responseObject.push(rowDataPacket.Deaths);
+  });
+
+  return JSON.stringify(responseObject);
+}
+
 export default {
     countryList,
     stateList,
     getDates,
     getData,
-    getDeltas
+    getDeltas,
+    getDonutData
 }
